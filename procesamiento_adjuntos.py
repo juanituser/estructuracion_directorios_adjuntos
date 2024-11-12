@@ -4,19 +4,19 @@ from PIL import Image
 from PyPDF2 import PdfMerger
 
 # Leer el archivo CSV
-rutas = pd.read_csv('C:/Users/PC/Documents/CEICOL/Documentacion/validadores propios/prueba/prueba.csv')
-categorias_fuente = ['_DI', '_EP', '_AD', '_SJ', '_DP']
-rutas_adjuntos_predio_por_categoria = rutas[['sufijo', 'predio']].value_counts(sort=True).reset_index(name='conteo')
-valor_directorio_raiz = 'C:/Users/PC/Documents/CEICOL/Documentacion/scripts/adjuntos_crudos/'
-valor_directorio_final = 'C:/Users/PC/Documents/CEICOL/Documentacion/scripts/adjuntos_procesados/'
+paths_df = pd.read_csv('C:/Users/PC/Documents/CEICOL/Documentacion/validadores propios/prueba/prueba.csv')
+adm_source_categories = ['_DI', '_EP', '_AD', '_SJ', '_DP']
+paths_attachment_property_by_category = paths_df[['sufijo', 'predio']].value_counts(sort=True).reset_index(name='conteo')
+root_directory = 'C:/Users/PC/Documents/CEICOL/Documentacion/scripts/adjuntos_crudos/'
+final_directory = 'C:/Users/PC/Documents/CEICOL/Documentacion/scripts/adjuntos_procesados/'
 
-def attachment_processing(directorio_raiz, directorio_final):
-    # Recorrer todas las carpetas en directorio_raiz
-    for dirpath, dirnames, filenames in os.walk(directorio_raiz):
+def attachment_processing(source_dir, target_dir):
+    # Recorrer todas las carpetas en source_dir
+    for dirpath, dirnames, filenames in os.walk(source_dir):
        
         # Crear la ruta de salida correspondiente
-        relative_path = os.path.relpath(dirpath, directorio_raiz)
-        output_dir = os.path.join(directorio_final, relative_path)
+        relative_path = os.path.relpath(dirpath, source_dir)
+        output_dir = os.path.join(target_dir, relative_path)
         os.makedirs(output_dir, exist_ok=True)
 
         # Procesar cada archivo en la carpeta
@@ -68,28 +68,28 @@ def merge_pdfs(arreglo_pdfs):
     
 def pdfs_to_merge(directorio):
 
-    for i in range(rutas_adjuntos_predio_por_categoria.shape[0]):
-        temp_fila = rutas_adjuntos_predio_por_categoria.iloc[i]
-        temp_rutas = rutas[(rutas['predio'] == temp_fila['predio']) & (rutas['sufijo'] == temp_fila['sufijo']) & (rutas['sufijo'].isin(categorias_fuente))]
-        if not temp_rutas.empty:
-            temp_rutas = temp_rutas.sort_values(by='nombre')  # Asegúrate de que 'nombre' exista en tus datos
-            pdfs_a_unir = []  
+    for i in range(paths_attachment_property_by_category.shape[0]):
+        category_property_count_row = paths_attachment_property_by_category.iloc[i]
+        filtered_paths = paths_df[(paths_df['predio'] == category_property_count_row['predio']) & (paths_df['sufijo'] == category_property_count_row['sufijo']) & (paths_df['sufijo'].isin(adm_source_categories))]
+        if not filtered_paths.empty:
+            filtered_paths = filtered_paths.sort_values(by='nombre')  # Asegúrate de que 'nombre' exista en tus datos
+            pdfs_to_combine = []  
             
-            ruta_base = ''
+            base_path = ''
 
-            for index, row in temp_rutas.iterrows():
-                ruta_base = directorio + row['ruta_base']
-                nombre = row['nombre']
-                nombre_archivo = nombre + '.pdf'
-                ruta_completa = os.path.join(ruta_base, nombre_archivo)
-                pdfs_a_unir.append(ruta_completa)
-            if len(pdfs_a_unir) > 1:
-                merge_pdfs(pdfs_a_unir)
+            for index, row in filtered_paths.iterrows():
+                base_path = directorio + row['ruta_base']
+                name = row['nombre']
+                pdf_file_name = name + '.pdf'
+                full_path = os.path.join(base_path, pdf_file_name)
+                pdfs_to_combine.append(full_path)
+            if len(pdfs_to_combine) > 1:
+                merge_pdfs(pdfs_to_combine)
             else:
-                print(f"No hay suficientes archivos PDF para fusionar en: {ruta_base}")
+                print(f"No hay suficientes archivos PDF para fusionar en: {base_path}")
 
-attachment_processing(valor_directorio_raiz, valor_directorio_final)          
-pdfs_to_merge(valor_directorio_final)
+attachment_processing(root_directory, final_directory)          
+pdfs_to_merge(final_directory)
 
     
 
