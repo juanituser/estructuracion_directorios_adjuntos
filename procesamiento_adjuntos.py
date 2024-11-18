@@ -4,11 +4,11 @@ from PIL import Image
 from PyPDF2 import PdfMerger
 
 # Leer el archivo CSV
-paths_df = pd.read_csv('C:/Users/PC/Documents/CEICOL/Documentacion/validadores propios/prueba/prueba.csv')
-adm_source_categories = ['_DI', '_EP', '_AD', '_SJ', '_DP']
+paths_df = pd.read_csv('C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/rutas.csv')
+adm_source_categories = ['_DI', '_EP', '_AD', '_SJ', '_DP', '_Sin_Documento', '_Documento_Publico.Otro_Documento_fuente']
 paths_attachment_property_by_category = paths_df[['sufijo', 'predio']].value_counts(sort=True).reset_index(name='conteo')
-root_directory = 'C:/Users/PC/Documents/CEICOL/Documentacion/scripts/adjuntos_crudos/'
-final_directory = 'C:/Users/PC/Documents/CEICOL/Documentacion/scripts/adjuntos_procesados/'
+root_directory = 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/crudos/'
+final_directory = 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/procesados/'
 
 def attachment_processing(source_dir, target_dir):
     # Recorrer todas las carpetas en source_dir
@@ -50,8 +50,6 @@ def attachment_processing(source_dir, target_dir):
                 except Exception as e:
                     print(f"Error al copiar {source_path}: {e}")
  
-
-
 def merge_pdfs(arreglo_pdfs):
     pdf_merged = arreglo_pdfs[0]
     merger = PdfMerger()

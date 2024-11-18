@@ -3,11 +3,11 @@ import requests
 import pandas as pd
 
 # Ruta del archivo CSV generado a partir de la base de datos
-csv_path = 'C:/Users/PC/Documents/CEICOL/Documentacion/validadores propios/prueba/prueba.csv'  
+
+csv_path = 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/rutas.csv'  
 
 # Ruta donde se guardarán los archivos
-save_path = 'C:/Users/PC/Documents/CEICOL/Documentacion/scripts/adjuntos_crudos/'
-
+save_path = 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/crudos/'
 
 # Cargar el archivo CSV
 df = pd.read_csv(csv_path)  
