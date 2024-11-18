@@ -110,8 +110,8 @@ select
         at.mpio, '/', 
         at.zona,
         case
-            when at.zona = '01' then '_rur/'
-            when at.zona = '02' then '_urb/'
+            when at.zona = '00' then '_rur/'
+            when at.zona = '01' then '_urb/'
             else 'zona_no_valida/'
         end,
         '01_especif/01_',
