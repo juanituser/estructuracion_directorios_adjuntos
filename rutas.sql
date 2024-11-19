@@ -1,8 +1,9 @@
 
 -- Fijar esquemas
 set search_path to 	
-	campo, -- Esquema del modelo de captura en campo
+	casco_u, -- Esquema del modelo de captura en campo
 	public;
+
 	
 drop table if exists rutas;
 
@@ -95,9 +96,22 @@ adjuntos_unidades as (
         end as sufijo,	
 	cca.identificador as identificador
     from cca_predio cp
-    left join cca_unidadconstruccion cu on cu.predio=cp.t_id
-    left join cca_caracteristicasunidadconstruccion cca on cca.t_id=cu.caracteristicasunidadconstruccion  
+    left join cca_construccion cc on cc.predio = cp.t_id
+    left join cca_unidadconstruccion cu on cu.construccion=cc.t_id
+    left join cca_caracteristicasunidadconstruccion cca on cca.t_id=cu.caracteristicasunidadconstruccion
     left join cca_adjuntounidadconstruccionvalor cau on cau.cca_unidadconstruccion_adjunto = cu.t_id
+    where cau.archivo like 'http%'-- Solo los subidos al repo
+),
+adjuntos_predios as (
+    select 
+        substring(cp.numero_predial, 1, 2) as dpto,
+        substring(cp.numero_predial, 3, 3) as mpio,
+        substring(cp.numero_predial, 6, 2) as zona,
+        cp.numero_predial as predio,
+        cap.archivo as url_documento,
+       	concat('_Psoporte_',cap.t_seq) as sufijo
+    from cca_predio cp
+    left join cca_adjuntoprediovalor cap on cap.cca_predio_adjunto = cp.t_id
     where cau.archivo like 'http%'-- Solo los subidos al repo
 )
 ------------------------------------------
@@ -111,8 +125,8 @@ select
         at.zona,
         case
             when at.zona = '00' then '_rur/'
-            when at.zona = '01' then '_urb/'
-            else 'zona_no_valida/'
+            when au.zona = '01' then '_urb/'
+            else 'otros/'
         end,
         '01_especif/01_',
         substring(at.predio, 6, 25),        
@@ -135,9 +149,9 @@ select
         ai.mpio, '/', 
         ai.zona,
         case
-            when ai.zona = '01' then '_rur/'
-            when ai.zona = '02' then '_urb/'
-            else 'zona_no_valida/'
+            when ai.zona = '00' then '_rur/'
+            when au.zona = '01' then '_urb/'
+            else 'otros/'
         end,
         '01_especif/01_',
         substring(ai.predio, 6, 25),        
@@ -164,9 +178,9 @@ select
         af.mpio, '/', 
         af.zona,
         case
-            when af.zona = '01' then '_rur/'
-            when af.zona = '02' then '_urb/'
-            else 'zona_no_valida/'
+            when af.zona = '00' then '_rur/'
+            when au.zona = '01' then '_urb/'
+            else 'otros/'
         end,
         '01_especif/01_',
         substring(af.predio, 6, 25),        
@@ -193,9 +207,9 @@ select
         au.mpio, '/', 
         au.zona,
         case
-            when au.zona = '01' then '_rur/'
-            when au.zona = '02' then '_urb/'
-            else 'zona_no_valida/'
+            when au.zona = '00' then '_rur/'
+            when au.zona = '01' then '_urb/'
+            else 'otros/'
         end,
         '01_especif/01_',
         substring(au.predio, 6, 25),        
@@ -204,8 +218,33 @@ select
     concat(au.predio, '_',au.identificador , au.sufijo) as nombre,
     au.url_documento as url_archivo,
     au.predio,
-     au.sufijo
+    au.sufijo
 from adjuntos_unidades au
-where au.url_documento is not null);
+where au.url_documento is not null
+-------------------------------------------
+------------- ADJUNTOS PREDIO -------------
+-------------------------------------------
+union
+select
+	'adjuntos predio' as tabla_adjuntos,
+    concat(
+        ap.dpto, '/', 
+        ap.mpio, '/', 
+        ap.zona,
+        case
+            when ap.zona = '00' then '_rur/'
+            when ap.zona = '01' then '_urb/'
+            else 'otros/'
+        end,
+        '01_especif/01_',
+        substring(ap.predio, 6, 25),        
+        '/02_doc_sop'
+    ) as ruta_base,
+    concat(ap.predio, ap.sufijo) as nombre,
+    ap.url_documento as url_archivo,
+    ap.predio,
+    ap.sufijo
+from adjuntos_predio ap
+where ap.url_documento is not null);
 
-COPY rutas TO 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/rutas.csv' WITH (FORMAT CSV, HEADER);
+COPY rutas TO 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/san_juan/adjuntos/rutas.csv' WITH (FORMAT CSV, HEADER);
