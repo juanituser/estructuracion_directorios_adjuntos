@@ -135,8 +135,8 @@ select
         ai.mpio, '/', 
         ai.zona,
         case
-            when ai.zona = '01' then '_rur/'
-            when ai.zona = '02' then '_urb/'
+            when ai.zona = '00' then '_rur/'
+            when ai.zona = '01' then '_urb/'
             else 'zona_no_valida/'
         end,
         '01_especif/01_',
@@ -164,8 +164,8 @@ select
         af.mpio, '/', 
         af.zona,
         case
-            when af.zona = '01' then '_rur/'
-            when af.zona = '02' then '_urb/'
+            when af.zona = '00' then '_rur/'
+            when af.zona = '01' then '_urb/'
             else 'zona_no_valida/'
         end,
         '01_especif/01_',
@@ -193,8 +193,8 @@ select
         au.mpio, '/', 
         au.zona,
         case
-            when au.zona = '01' then '_rur/'
-            when au.zona = '02' then '_urb/'
+            when au.zona = '00' then '_rur/'
+            when au.zona = '01' then '_urb/'
             else 'zona_no_valida/'
         end,
         '01_especif/01_',
