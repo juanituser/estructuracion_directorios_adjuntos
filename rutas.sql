@@ -112,7 +112,7 @@ adjuntos_predios as (
        	concat('_Psoporte_',cap.t_seq) as sufijo
     from cca_predio cp
     left join cca_adjuntoprediovalor cap on cap.cca_predio_adjunto = cp.t_id
-    where cau.archivo like 'http%'-- Solo los subidos al repo
+    where cap.archivo like 'http%'-- Solo los subidos al repo
 )
 ------------------------------------------
 ------------ ADJUNTOS TERRENO ------------
@@ -125,7 +125,7 @@ select
         at.zona,
         case
             when at.zona = '00' then '_rur/'
-            when au.zona = '01' then '_urb/'
+            when at.zona = '01' then '_urb/'
             else 'otros/'
         end,
         '01_especif/01_',
@@ -150,7 +150,7 @@ select
         ai.zona,
         case
             when ai.zona = '00' then '_rur/'
-            when au.zona = '01' then '_urb/'
+            when ai.zona = '01' then '_urb/'
             else 'otros/'
         end,
         '01_especif/01_',
@@ -179,7 +179,7 @@ select
         af.zona,
         case
             when af.zona = '00' then '_rur/'
-            when au.zona = '01' then '_urb/'
+            when af.zona = '01' then '_urb/'
             else 'otros/'
         end,
         '01_especif/01_',
@@ -244,7 +244,7 @@ select
     ap.url_documento as url_archivo,
     ap.predio,
     ap.sufijo
-from adjuntos_predio ap
+from adjuntos_predios ap
 where ap.url_documento is not null);
 
 COPY rutas TO 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/san_juan/adjuntos/rutas.csv' WITH (FORMAT CSV, HEADER);
