@@ -4,11 +4,11 @@ from PIL import Image
 from PyPDF2 import PdfMerger
 
 # Leer el archivo CSV
-paths_df = pd.read_csv('C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/rutas.csv')
-adm_source_categories = ['_DI', '_EP', '_AD', '_SJ', '_DP', '_Sin_Documento', '_Documento_Publico.Otro_Documento_fuente']
+paths_df = pd.read_csv('C:/Users/PC/Documents/CEICOL/entrega_leiva/resultados/rutas.csv')
+adm_source_categories = ['_DI', '_EP', '_AD', '_SJ', '_DP', '_Sin_Documento', '_Documento_Publico.Otro_Documento_fuente', '_Fuente_Informativa_Intercultural.Otros_Documentos']
 paths_attachment_property_by_category = paths_df[['sufijo', 'predio']].value_counts(sort=True).reset_index(name='conteo')
-root_directory = 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/crudos/'
-final_directory = 'C:/Users/PC/Documents/CEICOL/insumos_consolidados/leiva_zona_2_4/adjuntos/procesados/'
+root_directory = 'C:/Users/PC/Documents/CEICOL/entrega_leiva/resultados/crudos/'
+final_directory = 'C:/Users/PC/Documents/CEICOL/entrega_leiva/resultados/procesados/'
 
 def attachment_processing(source_dir, target_dir):
     # Recorrer todas las carpetas en source_dir
